@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockCam | Soluciones de Inventario IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS VISUALES (CSS) --- */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* --- BARRA DE NAVEGACIÓN --- */
+        nav {
+            background: rgba(15, 23, 42, 0.98);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn-contact {
+            padding: 8px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            color: var(--primary) !important;
+            font-weight: bold;
+        }
+        .btn-contact:hover { background: var(--primary); color: var(--bg-dark) !important; }
+
+        .menu-toggle { display: none; font-size: 26px; cursor: pointer; color: white; }
+
+        /* --- HERO --- */
+        .hero {
+            height: 100vh;
+            min-height: 600px;
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+        .hero h1 span { color: var(--primary); display: block; font-size: 0.7em; margin-top: 10px;}
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            max-width: 800px;
+            margin-bottom: 40px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--primary);
+            padding-left: 20px;
+            text-align: left;
+        }
+
+        .btn-hero {
+            padding: 15px 35px;
+            background-color: var(--primary);
+            color: #000;
+            border-radius: 5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .btn-hero:hover { transform: translateY(-3px); background-color: var(--primary-hover); }
+
+        /* --- GENERAL --- */
+        section { padding: 90px 20px; max-width: 1200px; margin: auto; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; margin-bottom: 10px; color: var(--text-main); }
+        .section-header span { color: var(--primary); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
+        .section-header p { max-width: 600px; margin: 15px auto 0; color: var(--text-muted); }
+
+        /* --- GRID 3 --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        .card {
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 12px;
+            border-top: 3px solid transparent;
+            transition: 0.3s;
+            position: relative;
+            height: 100%;
+        }
+        .card:hover { transform: translateY(-5px); border-top-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .card i { font-size: 40px; color: var(--primary); margin-bottom: 20px; }
+        .card h3 { margin-bottom: 15px; font-size: 1.4rem; }
+        .card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- SECTORES (Nuevo) --- */
+        .sectors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 40px; }
+        .sector-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .sector-item:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--primary); }
+        .sector-item i { font-size: 2rem; color: var(--text-main); margin-bottom: 15px; }
+        .sector-item h4 { color: var(--primary); margin-bottom: 10px; }
+
+        /* --- EMPRESA --- */
+        .about-wrapper { display: flex; gap: 50px; align-items: center; flex-wrap: wrap; }
+        .about-text { flex: 1; min-width: 300px; }
+        .about-img { flex: 1; min-width: 300px; }
+        .about-img img { border-radius: 15px; box-shadow: -20px 20px 0 rgba(56, 189, 248, 0.1); }
+        .stat-box { display: inline-block; margin-top: 20px; padding: 15px 25px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 4px solid var(--accent-green); }
+
+        /* --- PARTNERS --- */
+        .partners-section { text-align: center; background: #0b1120; padding: 60px 20px; margin-top: 50px; }
+        .partners-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 40px; opacity: 0.8; }
+        .partner-item { 
+            font-size: 1.1rem; font-weight: bold; color: #94a3b8; 
+            display: flex; align-items: center; gap: 10px; 
+            background: rgba(255,255,255,0.05); padding: 12px 25px; border-radius: 50px;
+        }
+        .partner-item i { color: var(--primary); font-size: 1.4rem; }
+
+        /* --- FAQ (Nuevo) --- */
+        .faq-container { max-width: 800px; margin: auto; }
+        details {
+            background: var(--bg-card);
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        details[open] { border-color: var(--primary); }
+        summary {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; font-size: 20px; color: var(--primary); font-weight: bold; }
+        details[open] summary::after { content: '-'; }
+        .faq-answer { padding: 0 20px 20px; color: var(--text-muted); font-size: 0.95rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+
+        /* --- CONTACTO --- */
+        .contact-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 50px;
+            background: var(--bg-card); padding: 50px; border-radius: 20px; margin-top: 30px;
+        }
+        .contact-info div { margin-bottom: 25px; display: flex; gap: 15px; align-items: center; }
+        .contact-info i { color: var(--primary); font-size: 1.5rem; }
+        
+        form input, form textarea {
+            width: 100%; background: var(--bg-dark); border: 1px solid #334155; padding: 15px;
+            color: white; border-radius: 5px; margin-bottom: 15px; font-family: inherit;
+        }
+        form button {
+            width: 100%; padding: 15px; background: var(--primary); border: none;
+            color: black; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 5px;
+        }
+        form button:hover { background: var(--primary-hover); }
+
+        /* --- FOOTER --- */
+        footer { background: black; text-align: center; padding: 40px 20px; border-top: 1px solid #334155; color: #64748b; margin-top: 50px; }
+
+        /* --- MÓVIL --- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: absolute; top: 70px; left: 0; width: 100%;
+                background: var(--bg-card); flex-direction: column;
+                padding: 30px; display: none; border-bottom: 1px solid var(--primary);
+            }
+            .nav-links.active { display: flex; }
+            .hero h1 { font-size: 2.2rem; }
+            section { padding: 60px 20px; }
+            .about-wrapper { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <i class="fas fa-camera-retro"></i> STOCKCAM
+        </div>
+        <div class="menu-toggle" id="mobile-menu"><i class="fas fa-bars"></i></div>
+        <ul class="nav-links">
+            <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
+            <li><a href="#empresa" onclick="closeMenu()">Empresa</a></li>
+            <li><a href="#servicios" onclick="closeMenu()">Servicios</a></li>
+            <li><a href="#faq" onclick="closeMenu()">FAQ</a></li>
+            <li><a href="#contacto" class="btn-contact" onclick="closeMenu()">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <header id="inicio" class="hero">
+        <h1>Precisión en Inventario <br> <span>Tranquilidad en Seguridad</span></h1>
+        <p>Automatizamos el control de stock y la seguridad de tu almacén mediante Cámaras Inteligentes e IA. La solución definitiva para evitar pérdidas y errores humanos.</p>
+        <a href="#contacto" class="btn-hero">Solicitar Demo</a>
+    </header>
+
+    <section id="empresa">
+        <div class="about-wrapper">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Tecnología StockCam">
+            </div>
+            <div class="about-text">
+                <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                    <span>Sobre Nosotros</span>
+                    <h2>Revolución Logística 4.0</h2>
+                </div>
+                <p>En <strong>StockCam</strong> (Sociedad Limitada), nacemos con un objetivo claro: eliminar el error humano en la gestión de almacenes. Somos pioneros en combinar <strong>Visión Artificial y Seguridad</strong> en un solo servicio.</p>
+                <br>
+                <p>A diferencia de la competencia, no solo vigilamos; gestionamos. Nuestro sistema actualiza el stock en tiempo real con cada entrada y salida, ofreciendo una solución accesible tanto para grandes multinacionales como para PYMES.</p>
+                
+                <div class="stat-box">
+                    <strong>Nuestra Misión:</strong><br>
+                    Transformar la cadena de suministro mediante automatización, garantizando datos fiables para decisiones estratégicas.
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top: 80px;">
+            <span>Público Objetivo</span>
+            <h2>Sectores de Aplicación</h2>
+        </div>
+        <div class="sectors-grid">
+            <div class="sector-item">
+                <i class="fas fa-warehouse"></i>
+                <h4>Logística</h4>
+                <p>Almacenes y centros de distribución que requieren trazabilidad total.</p>
+            </div>
+            <div class="sector-item">
+                <i class="fas fa-shopping-cart"></i>
+                <h4>Retail y Supermercados</h4>
+                <p>Control de lineal y prevención de roturas de stock en tiempo real.</p>
+            </div>
+            <div class="sector-item">
+                <i class="fas fa-industry"></i>
+                <h4>Industria y Fabricantes</h4>
+                <p>Gestión de materias primas y producto terminado.</p>
+            </div>
+            <div class="sector-item">
+                <i class="fas fa-store"></i>
+                <h4>PYMES</h4>
+                <p>Soluciones escalables y accesibles para pequeñas empresas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" style="background: #0b1120;">
+        <div class="section-header">
+            <span>Tecnología Integral</span>
+            <h2>Nuestros Servicios</h2>
+            <p>Utilizamos hardware de última generación y software propio para una gestión autónoma.</p>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <i class="fas fa-boxes-stacked"></i>
+                <h3>Control de Stock IA</h3>
+                <p>Nuestras cámaras identifican productos, leen códigos y actualizan el inventario automáticamente. Integración posible con sistemas ERP como SAP y Oracle.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-shield-halved"></i>
+                <h3>Seguridad Activa</h3>
+                <p>Videovigilancia inteligente. Sensores de movimiento que detectan accesos no autorizados fuera de horario y protegen la mercancía de robos internos y externos.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-mobile-screen-button"></i>
+                <h3>App de Gestión Cloud</h3>
+                <p>Toda la información en tu bolsillo. Consulta datos en tiempo real, recibe alertas de stock bajo y genera reportes de pérdidas desde nuestra plataforma segura en la nube (AWS).</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="proveedores" class="partners-section">
+        <div class="section-header">
+            <span>Alianzas Estratégicas</span>
+            <h2>Nuestros Partners Tecnológicos</h2>
+        </div>
+        <div class="partners-grid">
+            <div class="partner-item"><i class="fas fa-barcode"></i> Zebra</div>
+            <div class="partner-item"><i class="fas fa-microchip"></i> Honeywell</div>
+            <div class="partner-item"><i class="fab fa-aws"></i> AWS Cloud</div>
+            <div class="partner-item"><i class="fab fa-microsoft"></i> Azure IoT</div>
+            <div class="partner-item"><i class="fas fa-database"></i> SAP</div>
+            <div class="partner-item"><i class="fas fa-wifi"></i> Siemens</div>
+        </div>
+    </div>
+
+    <section id="faq">
+        <div class="section-header">
+            <span>Dudas Comunes</span>
+            <h2>Preguntas Frecuentes</h2>
+        </div>
+        <div class="faq-container">
+            <details>
+                <summary>¿Es complicada la instalación del sistema?</summary>
+                <div class="faq-answer">
+                    No. Nuestro objetivo es simplificar el proceso. Realizamos una instalación rápida de cámaras y sensores que se integran con tu infraestructura actual. Además, ofrecemos guías de manuales simples y soporte técnico.
+                </div>
+            </details>
+            <details>
+                <summary>¿Cumple StockCam con la normativa de privacidad (RGPD)?</summary>
+                <div class="faq-answer">
+                    Absolutamente. Cumplimos estrictamente con el Reglamento General de Protección de Datos y la Ley de IA de la UE. Nuestros sistemas cuentan con funciones de anonimización para garantizar la privacidad de los empleados.
+                </div>
+            </details>
+            <details>
+                <summary>¿Es rentable para una PYME?</summary>
+                <div class="faq-answer">
+                    Sí. Nuestra estructura de costes y modelos de pago flexibles permiten que pequeñas empresas accedan a tecnología de nivel industrial con una inversión inicial reducida (desde 3.000€ de capital inicial operativo).
+                </div>
+            </details>
+            <details>
+                <summary>¿Qué ocurre si hay un corte de internet?</summary>
+                <div class="faq-answer">
+                    Nuestros sistemas cuentan con almacenamiento local temporal y sincronización automática. Una vez restablecida la conexión, los datos se actualizan en la nube sin pérdida de información.
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <section id="contacto">
+        <div class="section-header">
+            <span>¿Hablamos?</span>
+            <h2>Contacto Comercial</h2>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Sede Central StockCam</h3>
+                <p style="margin-bottom: 30px; color: #94a3b8;">Estamos ubicados en Madrid, listos para atender tus necesidades logísticas.</p>
+                
+                <div>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>C/ Alcalá 250, 28027<br>Madrid, España</span>
+                </div>
+                <div>
+                    <i class="fas fa-envelope"></i>
+                    <span>stockcam@company.com</span>
+                </div>
+                <div>
+                    <i class="fas fa-globe"></i>
+                    <span>www.stockcam.com</span>
+                </div>
+            </div>
+
+            <form>
+                <input type="text" placeholder="Nombre de tu Empresa" required>
+                <input type="email" placeholder="Correo Electrónico" required>
+                <textarea rows="4" placeholder="¿Cómo podemos ayudarte?" required></textarea>
+                <button type="submit">Enviar Mensaje</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 StockCam S.L. - Precisión en Inventario, Tranquilidad en Seguridad.</p>
+        <div style="margin-top: 15px; font-size: 1.5rem;">
+            <a href="#" style="margin: 0 10px;"><i class="fab fa-linkedin"></i></a>
+            <a href="#" style="margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        });
+
+        function closeMenu() {
+            if (window.innerWidth <= 768) {
+                navLinks.classList.remove('active');
+                menuToggle.querySelector('i').classList.add('fa-bars');
+                menuToggle.querySelector('i').classList.remove('fa-times');
+            }
+        }
+    </script>
+
+</body>
+</html>
