@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockCam | Control Inteligente</title>
+    <title>StockCam | Precisión en Inventario</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         /* =========================================
-           VARIABLES Y BASE
+           1. CONFIGURACIÓN BASE
            ========================================= */
         :root {
             --bg-dark: #0f172a;       
@@ -35,15 +35,15 @@
         ul { list-style: none; }
         img { max-width: 100%; display: block; }
 
-        /* AJUSTE PARA QUE EL MENÚ NO TAPE LOS TÍTULOS AL HACER CLICK */
+        /* Ajuste para que el menú no tape los títulos al hacer clic */
         section, div[id] { scroll-margin-top: 100px; }
 
         /* =========================================
-           NAVBAR (Barra de Navegación)
+           2. BARRA DE NAVEGACIÓN (NAVBAR)
            ========================================= */
         nav {
             background: rgba(15, 23, 42, 0.98);
-            padding: 10px 5%; /* Reducido padding para que quepa mejor */
+            padding: 0 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,24 +51,30 @@
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            height: 80px; /* Altura fija para controlar el logo */
+            height: 80px; /* Altura fija */
         }
 
-        /* LOGO SVG AJUSTADO */
-        .logo-link {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            max-width: 250px; /* Límite de ancho */
+        /* LOGO SOLO TEXTO (LIMPIO) */
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
         }
 
-        .logo-svg {
-            height: 50px; /* Altura controlada para que quepa */
-            width: auto;
-        }
+        .nav-links { display: flex; gap: 30px; align-items: center; height: 100%; }
+        
+        /* ESTO ARREGLA EL DESPLEGABLE: Altura 100% para no dejar huecos */
+        .nav-links li { 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            position: relative;
+        } 
 
-        /* MENÚ DE ENLACES */
-        .nav-links { display: flex; gap: 30px; align-items: center; }
         .nav-links a { font-weight: 600; font-size: 14px; text-transform: uppercase; color: #cbd5e1; }
         .nav-links a:hover { color: var(--accent); }
 
@@ -80,34 +86,39 @@
         }
         .btn-nav:hover { background: var(--accent); color: var(--bg-dark) !important; }
 
-        /* DESPLEGABLE (DROPDOWN) */
-        .dropdown { position: relative; height: 100%; display: flex; align-items: center; }
+        /* DESPLEGABLE (DROPDOWN) - SOLUCIONADO EL CLICK */
         .dropdown-content {
             display: none;
             position: absolute;
-            top: 60px; /* Ajustado */
-            left: -20px;
+            top: 100%; /* Se pega exactamente al borde inferior */
+            left: 0;
             background-color: var(--bg-card);
-            min-width: 220px;
+            min-width: 200px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-radius: 8px;
-            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            padding: 0; /* Sin padding externo para evitar huecos */
             border: 1px solid rgba(255,255,255,0.05);
+            border-top: 3px solid var(--accent); /* Línea decorativa arriba */
             z-index: 1001;
         }
-        .dropdown:hover .dropdown-content { display: block; }
+
+        /* Al pasar el ratón por el LI (el botón), se muestra el menú */
+        .nav-links li:hover .dropdown-content { display: block; }
+
         .dropdown-content a {
             display: block;
-            padding: 12px 25px;
+            padding: 15px 20px;
             color: var(--text-gray);
             border-bottom: 1px solid rgba(255,255,255,0.02);
+            font-size: 13px;
+            width: 100%; /* Ocupa todo el ancho */
         }
         .dropdown-content a:hover { background-color: #334155; color: var(--accent); }
 
         .menu-toggle { display: none; font-size: 24px; color: white; cursor: pointer; }
 
         /* =========================================
-           HERO SECTION
+           3. HERO SECTION (PORTADA)
            ========================================= */
         .hero {
             height: 85vh;
@@ -136,7 +147,7 @@
         .cta-button:hover { transform: scale(1.05); background: white; }
 
         /* =========================================
-           SECCIONES COMUNES
+           4. SECCIONES GENERALES
            ========================================= */
         section { padding: 80px 5%; max-width: 1200px; margin: auto; }
         
@@ -160,25 +171,26 @@
         .feature-card p { font-size: 0.95rem; color: var(--text-gray); }
 
         /* =========================================
-           NUESTRO ENFOQUE (MERCADO)
+           5. NUESTRO ENFOQUE (MERCADO)
            ========================================= */
         .market-section { background-color: #162033; padding: 60px 5%; }
         .market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .market-item { background: rgba(255,255,255,0.03); padding: 25px; border-radius: 10px; text-align: center; }
         .market-item i { font-size: 28px; color: white; margin-bottom: 15px; }
+        .market-item h4 { margin-bottom: 5px; }
+        .market-item p { font-size: 0.9rem; color: #cbd5e1; }
 
         /* =========================================
-           MISION Y VISION (NOSOTROS) - Ahora debajo de Enfoque
+           6. MISION Y VISION
            ========================================= */
         .about-split { display: flex; gap: 50px; align-items: center; }
         .about-img img { border-radius: 15px; box-shadow: -15px 15px 0 rgba(56, 189, 248, 0.2); }
         
-        /* Contenedor específico para las anclas */
         .mv-container { margin-bottom: 30px; }
         .mv-title { color: var(--accent); font-size: 1.4rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
 
         /* =========================================
-           PARTNERS
+           7. PARTNERS
            ========================================= */
         .partners-bar {
             background: #0b1120; padding: 40px 20px; text-align: center;
@@ -190,7 +202,7 @@
         }
 
         /* =========================================
-           FAQ
+           8. FAQ
            ========================================= */
         .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .faq-item { background: var(--bg-card); padding: 25px; border-radius: 8px; }
@@ -198,7 +210,7 @@
         .faq-item p { font-size: 0.9rem; color: #cbd5e1; }
 
         /* =========================================
-           CONTACTO (Centrado)
+           9. CONTACTO (CENTRADO)
            ========================================= */
         .contact-container {
             background: var(--bg-card); border-radius: 15px; overflow: hidden;
@@ -216,53 +228,59 @@
             background: #0f172a; border: 1px solid #334155; border-radius: 5px; color: white;
         }
 
-        footer { background: #020617; padding: 40px; text-align: center; margin-top: 80px; border-top: 1px solid #1e293b; }
+        /* =========================================
+           10. FOOTER
+           ========================================= */
+        footer { 
+            background: #020617; 
+            padding: 50px 20px; 
+            text-align: center; 
+            margin-top: 80px; 
+            border-top: 1px solid #1e293b; 
+        }
 
-        /* RESPONSIVE */
+        .footer-logo {
+            max-width: 250px; 
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        /* RESPONSIVE MÓVIL */
         @media (max-width: 900px) {
             .nav-links {
                 position: absolute; top: 80px; left: 0; width: 100%;
                 background: var(--bg-card); flex-direction: column; padding: 30px;
-                display: none; border-bottom: 2px solid var(--accent);
+                display: none; border-bottom: 2px solid var(--accent); height: auto;
             }
             .nav-links.active { display: flex; }
+            .nav-links li { width: 100%; display: block; text-align: center; margin-bottom: 10px; height: auto; }
+            .dropdown-content { position: static; box-shadow: none; width: 100%; border: none; background: rgba(0,0,0,0.2); border-top: none; }
+            
             .menu-toggle { display: block; }
             .about-split { flex-direction: column; }
             .faq-grid { grid-template-columns: 1fr; }
-            .logo-link { max-width: 200px; } /* Logo más pequeño en móvil */
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#inicio" class="logo-link">
-            <svg class="logo-svg" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                <text x="0" y="60" font-family="'Montserrat', sans-serif" font-weight="900" font-size="65" fill="white">ST</text>
-                
-                <g transform="translate(90, 10)">
-                    <path fill="white" d="M25 0 C11 0 0 11 0 25 C0 39 11 50 25 50 C39 50 50 39 50 25 C50 11 39 0 25 0 Z M25 45 C14 45 5 36 5 25 C5 14 14 5 25 5 C36 5 45 14 45 25 C45 36 36 45 25 45 Z"/>
-                    <circle cx="25" cy="25" r="12" fill="#38bdf8"/>
-                    <circle cx="29" cy="21" r="3" fill="white"/>
-                </g>
-
-                <text x="150" y="60" font-family="'Montserrat', sans-serif" font-weight="900" font-size="65" fill="white">CKCAM</text>
-                
-                <text x="2" y="78" font-family="'Roboto', sans-serif" font-size="9.5" fill="#94a3b8" letter-spacing="1.5" font-weight="bold">PRECISIÓN EN INVENTARIO</text>
-            </svg>
-        </a>
+        <a href="#inicio" class="logo-text">STOCKCAM</a>
 
         <div class="menu-toggle" id="mobile-menu"><i class="fas fa-bars"></i></div>
 
         <ul class="nav-links">
             <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
+            
             <li class="dropdown">
-                <a href="#" onclick="toggleDropdown(event)">La Empresa <i class="fas fa-chevron-down" style="font-size: 10px; margin-left:5px;"></i></a>
+                <a href="#">La Empresa <i class="fas fa-chevron-down" style="font-size: 10px; margin-left:5px;"></i></a>
                 <div class="dropdown-content">
-                    <a href="#mision-vision" onclick="closeMenu()">Misión y Visión</a>
                     <a href="#mercado" onclick="closeMenu()">Nuestro Enfoque</a>
+                    <a href="#mision-vision" onclick="closeMenu()">Misión y Visión</a>
                 </div>
             </li>
+
             <li><a href="#tecnologia" onclick="closeMenu()">Tecnología</a></li>
             <li><a href="#faq" onclick="closeMenu()">FAQ</a></li>
             <li><a href="#contacto" class="btn-nav" onclick="closeMenu()">Contacto</a></li>
@@ -308,17 +326,17 @@
             <div class="market-item">
                 <i class="fas fa-warehouse"></i>
                 <h4>Logística</h4>
-                <p style="font-size: 0.9rem; color:#cbd5e1;">Trazabilidad total en grandes almacenes.</p>
+                <p>Trazabilidad total en grandes almacenes.</p>
             </div>
             <div class="market-item">
                 <i class="fas fa-shopping-cart"></i>
                 <h4>Retail</h4>
-                <p style="font-size: 0.9rem; color:#cbd5e1;">Control de estanterías en tiempo real.</p>
+                <p>Control de estanterías en tiempo real.</p>
             </div>
             <div class="market-item">
                 <i class="fas fa-industry"></i>
                 <h4>Industria</h4>
-                <p style="font-size: 0.9rem; color:#cbd5e1;">Gestión de materia prima sin paradas.</p>
+                <p>Gestión de materia prima sin paradas.</p>
             </div>
         </div>
     </div>
@@ -412,7 +430,6 @@
     <script>
         const menuToggle = document.getElementById('mobile-menu');
         const navLinks = document.querySelector('.nav-links');
-        const dropdown = document.querySelector('.dropdown');
 
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
@@ -426,14 +443,6 @@
                 navLinks.classList.remove('active');
                 menuToggle.querySelector('i').classList.add('fa-bars');
                 menuToggle.querySelector('i').classList.remove('fa-times');
-            }
-        }
-
-        function toggleDropdown(e) {
-            if (window.innerWidth <= 900) {
-                e.preventDefault();
-                let content = dropdown.querySelector('.dropdown-content');
-                content.style.display = content.style.display === 'block' ? 'none' : 'block';
             }
         }
     </script>
