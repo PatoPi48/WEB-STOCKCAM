@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockCam | Precisión en Inventario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABLES Y RESET --- */
+        :root {
+            --primary: #0f172a; 
+            --secondary: #1e293b; 
+            --accent: #38bdf8; 
+            --accent-hover: #0ea5e9;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* --- NAVBAR --- */
+        nav {
+            background: rgba(15, 23, 42, 0.98);
+            padding: 15px 5%; /* % para adaptarse a pantallas anchas */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+        }
+
+        /* Enlaces de navegación (Desktop) */
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links li { position: relative; }
+        .nav-links a { font-weight: 500; font-size: 16px; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* Botón Hamburguesa (Oculto en PC) */
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            z-index: 1001;
+        }
+
+        /* --- DROPDOWN (Escritorio) --- */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--secondary);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            border-radius: 5px;
+            padding: 10px 0;
+        }
+
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px 20px;
+            color: var(--text-gray);
+            border-bottom: 1px solid #334155;
+        }
+        .dropdown-content a:hover { background-color: #334155; color: var(--accent); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh; /* Ocupa toda la pantalla */
+            min-height: 600px;
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem); /* Texto responsive fluido */
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+
+        .hero h1 span { color: var(--accent); }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            max-width: 700px;
+            margin-bottom: 40px;
+            color: var(--text-gray);
+        }
+
+        .btn {
+            padding: 15px 35px;
+            background-color: var(--accent);
+            color: #000;
+            border-radius: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            display: inline-block;
+        }
+        
+        .btn:hover { background-color: var(--accent-hover); transform: scale(1.05); }
+
+        /* --- SECCIONES GENERALES --- */
+        section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 2.5rem; margin-bottom: 10px; color: var(--accent); }
+        .section-title p { color: var(--text-gray); }
+
+        /* --- GRID SYSTEM (Responsive) --- */
+        .grid-container {
+            display: grid;
+            /* Se ajusta auto: mínimo 280px por tarjeta, si no cabe, baja de línea */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--secondary);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .card i { font-size: 35px; color: var(--accent); margin-bottom: 20px; }
+        .card h3 { margin-bottom: 15px; font-size: 1.3rem; }
+
+        /* --- ABOUT US --- */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap; /* Importante para móvil: permite que bajen los elementos */
+        }
+        .about-text, .about-image { flex: 1; min-width: 300px; } /* Mínimo ancho para no aplastarse */
+        
+        .about-image img { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        .highlight-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* --- CONTACTO --- */
+        .contact-container {
+            background-color: var(--secondary);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        .contact-info, .contact-form { flex: 1; min-width: 280px; }
+        
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 8px;
+        }
+        .contact-form button {
+            width: 100%; padding: 15px; background: var(--accent); border: none;
+            color: black; font-weight: bold; border-radius: 8px; cursor: pointer;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #020617;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #1e293b;
+        }
+
+        /* =========================================
+           MEDIA QUERIES (ESTILOS PARA MÓVIL)
+           ========================================= */
+        @media (max-width: 768px) {
+            
+            /* Ajustes Navegación Móvil */
+            .menu-toggle { display: block; } /* Mostrar icono hamburguesa */
+
+            .nav-links {
+                position: absolute;
+                top: 70px; /* Altura del navbar */
+                left: 0;
+                width: 100%;
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                border-bottom: 2px solid var(--accent);
+                /* Ocultar menú por defecto en móvil */
+                display: none; 
+            }
+
+            /* Clase que añadiremos con JS para mostrar el menú */
+            .nav-links.active { display: flex; animation: slideDown 0.3s ease; }
+
+            .nav-links li { width: 100%; text-align: center; margin: 10px 0; }
+            
+            /* Ajustar dropdown en móvil para que se vea plano */
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                background: rgba(0,0,0,0.2);
+                display: none; /* Se oculta hasta hacer click/hover */
+            }
+            .dropdown.active .dropdown-content { display: block; }
+
+            /* Ajustes de secciones */
+            section { padding: 50px 20px; }
+            .hero h1 { font-size: 2.2rem; }
+            .about-content { gap: 30px; }
+            
+            /* Ajustes de tarjeta contacto */
+            .contact-container { padding: 20px; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <i class="fas fa-camera-retro"></i> StockCam
+        </div>
+
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
+            
+            <li class="dropdown">
+                <a href="#nosotros" onclick="toggleDropdown(event)">La Empresa <i class="fas fa-chevron-down" style="font-size: 12px;"></i></a>
+                <div class="dropdown-content">
+                    <a href="#mision" onclick="closeMenu()">Nuestra Misión</a>
+                    <a href="#vision" onclick="closeMenu()">Nuestra Visión</a>
+                    <a href="#valores" onclick="closeMenu()">Valores</a>
+                </div>
+            </li>
+
+            <li><a href="#tecnologia" onclick="closeMenu()">Tecnología</a></li>
+            <li><a href="#servicios" onclick="closeMenu()">Servicios</a></li>
+            <li><a href="#contacto" class="btn-nav" onclick="closeMenu()" style="color: var(--accent);">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <header id="inicio" class="hero">
+        <h1>Control Inteligente <br> <span>StockCam</span></h1>
+        <p>"Precisión en inventario, tranquilidad en seguridad"</p>
+        <a href="#contacto" class="btn">Solicitar Demo <i class="fas fa-arrow-right"></i></a>
+    </header>
+
+    <section id="problema">
+        <div class="section-title">
+            [cite_start]<h2>El Desafío [cite: 1]</h2>
+            <p>Las empresas pierden eficiencia por errores manuales.</p>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <i class="fas fa-times-circle" style="color: #ef4444;"></i>
+                <h3>Errores Manuales</h3>
+                [cite_start]<p>Las empresas pierden eficiencia debido a errores humanos en el conteo[cite: 1].</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-chart-line" style="color: #ef4444;"></i>
+                <h3>Falta de Datos</h3>
+                [cite_start]<p>Ausencia de información en tiempo real y roturas de stock inesperadas[cite: 1].</p>
+            </div>
+            <div class="card" style="border-color: var(--accent);">
+                <i class="fas fa-check-circle"></i>
+                <h3>Solución IA</h3>
+                [cite_start]<p>Software basado en Inteligencia Artificial que actualiza sin intervención humana[cite: 1].</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="nosotros">
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Almacén">
+            </div>
+            <div class="about-text">
+                <h2>¿Quiénes Somos?</h2>
+                [cite_start]<p>StockCam S.L. pertenece al sector tecnológico, innovando en logística con visión artificial e IoT[cite: 28].</p>
+                
+                <div id="mision" class="highlight-box">
+                    <h3><i class="fas fa-bullseye"></i> Nuestra Misión</h3>
+                    [cite_start]<p>Automatizar procesos y mejorar la trazabilidad para transformar la cadena de suministro[cite: 181].</p>
+                </div>
+
+                <div id="vision" class="highlight-box" style="border-color: #fff;">
+                    <h3><i class="fas fa-eye"></i> Nuestra Visión</h3>
+                    [cite_start]<p>Ser el partner tecnológico clave en la transformación digital de nuestros clientes[cite: 183].</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tecnologia">
+        <div class="section-title">
+            <h2>Tecnología y Servicios</h2>
+            [cite_start]<p>Innovación para almacenes y supermercados [cite: 47]</p>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <i class="fas fa-camera"></i>
+                <h3>Visión Artificial</h3>
+                [cite_start]<p>Cámaras que reconocen productos automáticamente con cada entrada y salida[cite: 1, 7].</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-user-secret"></i>
+                <h3>Seguridad Activa</h3>
+                [cite_start]<p>Sensores de movimiento que capturan imágenes ante posibles robos[cite: 7].</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>App en Tiempo Real</h3>
+                [cite_start]<p>La información es recolectada por nuestra App y consultable en cualquier momento[cite: 7].</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="valores">
+        <div class="section-title">
+            [cite_start]<h2>Nuestros Valores [cite: 1]</h2>
+        </div>
+        <div class="grid-container" style="text-align: center;">
+            <div class="card">
+                <i class="fas fa-lightbulb"></i>
+                <h3>Innovación</h3>
+                <p>Apostamos por tecnología avanzada.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-crosshairs"></i>
+                <h3>Precisión</h3>
+                <p>Datos fiables para decisiones estratégicas.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-leaf"></i>
+                <h3>Eficiencia</h3>
+                <p>Automatización que reduce costes.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto">
+        <div class="section-title">
+            <h2>Contacto</h2>
+            <p>Madrid, España</p>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Sede Central</h3>
+                <p>Estamos listos para modernizar tu stock.</p>
+                <br>
+                <div>
+                    <i class="fas fa-map-marker-alt" style="color: var(--accent); margin-right: 10px;"></i>
+                    [cite_start]<span>Calle Caoba 12, Bajo A, Madrid [cite: 320]</span>
+                </div>
+                <br>
+                <div>
+                    <i class="fas fa-envelope" style="color: var(--accent); margin-right: 10px;"></i>
+                    [cite_start]<span>contacto@stockcam.com [cite: 1]</span>
+                </div>
+            </div>
+
+            <form class="contact-form">
+                <input type="text" placeholder="Empresa" required>
+                <input type="email" placeholder="Email" required>
+                <textarea rows="4" placeholder="Mensaje" required></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        [cite_start]<p>© 2026 StockCam S.L. [cite: 1]</p>
+        <div style="margin-top: 10px; font-size: 20px;">
+            <a href="#" style="margin: 0 10px; color:white;"><i class="fab fa-linkedin"></i></a>
+            <a href="#" style="margin: 0 10px; color:white;"><i class="fab fa-twitter"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Seleccionar elementos
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const dropdown = document.querySelector('.dropdown');
+
+        // Abrir/Cerrar menú al tocar el icono hamburguesa
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Cambiar icono de hamburguesa a X
+            const icon = menuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Función para cerrar el menú al hacer clic en un enlace
+        function closeMenu() {
+            if (window.innerWidth <= 768) {
+                navLinks.classList.remove('active');
+                menuToggle.querySelector('i').classList.remove('fa-times');
+                menuToggle.querySelector('i').classList.add('fa-bars');
+            }
+        }
+
+        // Función especial para el dropdown en móvil
+        function toggleDropdown(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault(); // Evita que salte al link inmediatamente
+                dropdown.classList.toggle('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
