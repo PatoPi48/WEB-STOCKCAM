@@ -16,6 +16,7 @@
             --bg-dark: #0f172a;       
             --bg-card: #1e293b;       
             --accent: #38bdf8;        
+            --accent-hover: #0ea5e9;
             --text-white: #f1f5f9;
             --text-gray: #94a3b8;
         }
@@ -28,6 +29,7 @@
             background-color: var(--bg-dark);
             color: var(--text-white);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: white; }
@@ -51,10 +53,9 @@
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            height: 80px; /* Altura fija */
+            height: 80px;
         }
 
-        /* LOGO SOLO TEXTO (LIMPIO) */
         .logo-text {
             font-family: 'Montserrat', sans-serif;
             font-size: 28px;
@@ -66,15 +67,7 @@
         }
 
         .nav-links { display: flex; gap: 30px; align-items: center; height: 100%; }
-        
-        /* ESTO ARREGLA EL DESPLEGABLE: Altura 100% para no dejar huecos */
-        .nav-links li { 
-            height: 100%; 
-            display: flex; 
-            align-items: center; 
-            position: relative;
-        } 
-
+        .nav-links li { height: 100%; display: flex; align-items: center; position: relative; } 
         .nav-links a { font-weight: 600; font-size: 14px; text-transform: uppercase; color: #cbd5e1; }
         .nav-links a:hover { color: var(--accent); }
 
@@ -86,23 +79,22 @@
         }
         .btn-nav:hover { background: var(--accent); color: var(--bg-dark) !important; }
 
-        /* DESPLEGABLE (DROPDOWN) - SOLUCIONADO EL CLICK */
+        /* DESPLEGABLE (DROPDOWN) */
         .dropdown-content {
             display: none;
             position: absolute;
-            top: 100%; /* Se pega exactamente al borde inferior */
+            top: 100%;
             left: 0;
             background-color: var(--bg-card);
             min-width: 200px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border-radius: 0 0 8px 8px;
-            padding: 0; /* Sin padding externo para evitar huecos */
+            padding: 0;
             border: 1px solid rgba(255,255,255,0.05);
-            border-top: 3px solid var(--accent); /* Línea decorativa arriba */
+            border-top: 3px solid var(--accent);
             z-index: 1001;
         }
 
-        /* Al pasar el ratón por el LI (el botón), se muestra el menú */
         .nav-links li:hover .dropdown-content { display: block; }
 
         .dropdown-content a {
@@ -111,14 +103,14 @@
             color: var(--text-gray);
             border-bottom: 1px solid rgba(255,255,255,0.02);
             font-size: 13px;
-            width: 100%; /* Ocupa todo el ancho */
+            width: 100%;
         }
         .dropdown-content a:hover { background-color: #334155; color: var(--accent); }
 
         .menu-toggle { display: none; font-size: 24px; color: white; cursor: pointer; }
 
         /* =========================================
-           3. HERO SECTION (PORTADA)
+           3. HERO SECTION
            ========================================= */
         .hero {
             height: 85vh;
@@ -171,7 +163,7 @@
         .feature-card p { font-size: 0.95rem; color: var(--text-gray); }
 
         /* =========================================
-           5. NUESTRO ENFOQUE (MERCADO)
+           5. NUESTRO ENFOQUE
            ========================================= */
         .market-section { background-color: #162033; padding: 60px 5%; }
         .market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
@@ -181,20 +173,39 @@
         .market-item p { font-size: 0.9rem; color: #cbd5e1; }
 
         /* =========================================
-           6. MISION Y VISION
+           6. MISION, VISION Y VALORES (MEJORADO)
            ========================================= */
-        .about-split { display: flex; gap: 50px; align-items: center; }
-        .about-img img { border-radius: 15px; box-shadow: -15px 15px 0 rgba(56, 189, 248, 0.2); }
+        .about-split { display: flex; gap: 50px; align-items: start; }
+        .about-img { flex: 1; position: sticky; top: 100px; } /* Imagen "pegajosa" al hacer scroll */
+        .about-img img { border-radius: 15px; box-shadow: -15px 15px 0 rgba(56, 189, 248, 0.2); width: 100%; height: auto; object-fit: cover; }
         
-        .mv-container { margin-bottom: 30px; }
-        .mv-title { color: var(--accent); font-size: 1.4rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .about-txt { flex: 1.2; }
+
+        /* Tarjetas de Misión y Visión para que no se vea "soso" */
+        .mv-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+            transition: 0.3s;
+        }
+        .mv-card:hover { background: rgba(255, 255, 255, 0.06); transform: translateX(5px); }
+
+        .mv-title { color: white; font-size: 1.4rem; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: bold; }
+        .mv-title i { color: var(--accent); }
+        .mv-text { color: var(--text-gray); font-size: 0.95rem; }
+
+        /* Sección de Valores (NUEVO) */
+        .values-grid { display: flex; gap: 15px; margin-top: 30px; }
+        .value-item { text-align: center; flex: 1; padding: 15px; background: var(--bg-card); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .value-item i { color: var(--accent); font-size: 20px; margin-bottom: 10px; }
+        .value-item span { display: block; font-size: 0.9rem; font-weight: bold; color: white; }
 
         /* =========================================
            7. PARTNERS
            ========================================= */
-        .partners-bar {
-            background: #0b1120; padding: 40px 20px; text-align: center;
-        }
+        .partners-bar { background: #0b1120; padding: 40px 20px; text-align: center; }
         .partners-flex { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 20px; }
         .partner-pill {
             background: rgba(255,255,255,0.05); padding: 10px 25px; border-radius: 20px;
@@ -202,15 +213,16 @@
         }
 
         /* =========================================
-           8. FAQ
+           8. FAQ (AMPLIADO)
            ========================================= */
-        .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .faq-item { background: var(--bg-card); padding: 25px; border-radius: 8px; }
-        .faq-item h4 { color: var(--accent); margin-bottom: 10px; font-size: 1.1rem; }
+        .faq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; }
+        .faq-item { background: var(--bg-card); padding: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); }
+        .faq-item:hover { border-color: rgba(56, 189, 248, 0.3); }
+        .faq-item h4 { color: var(--accent); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
         .faq-item p { font-size: 0.9rem; color: #cbd5e1; }
 
         /* =========================================
-           9. CONTACTO (CENTRADO)
+           9. CONTACTO
            ========================================= */
         .contact-container {
             background: var(--bg-card); border-radius: 15px; overflow: hidden;
@@ -239,13 +251,6 @@
             border-top: 1px solid #1e293b; 
         }
 
-        .footer-logo {
-            max-width: 250px; 
-            margin-bottom: 20px;
-            filter: brightness(0) invert(1);
-            opacity: 0.9;
-        }
-
         /* RESPONSIVE MÓVIL */
         @media (max-width: 900px) {
             .nav-links {
@@ -259,7 +264,9 @@
             
             .menu-toggle { display: block; }
             .about-split { flex-direction: column; }
+            .about-img { position: static; margin-bottom: 30px; }
             .faq-grid { grid-template-columns: 1fr; }
+            .values-grid { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -344,20 +351,41 @@
     <section id="mision-vision">
         <div class="about-split">
             <div class="about-img">
-                <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Almacén">
+                <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Almacén Inteligente">
             </div>
             <div class="about-txt">
-                <h2 style="margin-bottom: 20px; color: white;">Nuestra Razón de Ser</h2>
+                <h2 style="margin-bottom: 30px; color: white;">Nuestra Razón de Ser</h2>
                 
-                <div class="mv-container">
+                <div class="mv-card">
                     <div class="mv-title"><i class="fas fa-bullseye"></i> Misión</div>
-                    <p style="color: var(--text-gray);">Ayudar a empresas a automatizar procesos, mejorar la trazabilidad y reducir errores, transformando su cadena de suministro.</p>
+                    <div class="mv-text">
+                        Ayudar a empresas a automatizar procesos, mejorar la trazabilidad y reducir errores humanos, transformando su cadena de suministro en una ventaja competitiva real.
+                    </div>
                 </div>
 
-                <div class="mv-container">
+                <div class="mv-card">
                     <div class="mv-title"><i class="fas fa-eye"></i> Visión</div>
-                    <p style="color: var(--text-gray);">Ser el partner tecnológico clave que acompaña a sus clientes en su proceso de transformación digital hacia la industria 4.0.</p>
+                    <div class="mv-text">
+                        Ser el partner tecnológico de referencia en Europa para la transformación digital logística, liderando el cambio hacia la industria 4.0 con soluciones éticas y eficientes.
+                    </div>
                 </div>
+
+                <h4 style="margin-top: 30px; font-size: 1rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Nuestros Valores</h4>
+                <div class="values-grid">
+                    <div class="value-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Innovación</span>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-handshake"></i>
+                        <span>Transparencia</span>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-medal"></i>
+                        <span>Calidad</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -365,9 +393,9 @@
     <section id="tecnologia" style="background: var(--bg-card);">
         <div class="section-header"><h2>Tecnología Avanzada</h2></div>
         <div class="grid-3">
-            <div class="feature-card"><i class="fas fa-camera"></i><h3>Visión IA</h3><p>Reconocimiento de productos al instante.</p></div>
-            <div class="feature-card"><i class="fas fa-shield-alt"></i><h3>Seguridad</h3><p>Sensores de movimiento integrados.</p></div>
-            <div class="feature-card"><i class="fas fa-mobile-alt"></i><h3>App Cloud</h3><p>Control total desde tu móvil.</p></div>
+            <div class="feature-card"><i class="fas fa-camera"></i><h3>Visión IA</h3><p>Reconocimiento de productos al instante mediante algoritmos de Deep Learning.</p></div>
+            <div class="feature-card"><i class="fas fa-shield-alt"></i><h3>Seguridad</h3><p>Sensores de movimiento integrados que distinguen personal de maquinaria.</p></div>
+            <div class="feature-card"><i class="fas fa-mobile-alt"></i><h3>App Cloud</h3><p>Control total de tu almacén desde cualquier dispositivo móvil.</p></div>
         </div>
     </section>
 
@@ -382,29 +410,48 @@
     </div>
 
     <section id="faq">
-        <div class="section-header"><h2>Preguntas Frecuentes</h2></div>
+        <div class="section-header">
+            <h2>Preguntas Frecuentes</h2>
+            <p>Resolvemos las dudas habituales antes de empezar tu proyecto.</p>
+        </div>
         <div class="faq-grid">
             <div class="faq-item">
-                <h4>¿Es rentable para una PYME?</h4>
-                <p>Sí, nuestros planes escalables eliminan la necesidad de grandes inversiones iniciales en hardware.</p>
+                <h4><i class="fas fa-chart-line"></i> ¿Es rentable para una PYME?</h4>
+                <p>Sí. Nuestros planes eliminan la necesidad de grandes inversiones iniciales (CAPEX) pasándolo a un modelo operativo mensual (OPEX) accesible.</p>
             </div>
             <div class="faq-item">
-                <h4>¿Se integra con mi software?</h4>
-                <p>Totalmente. Compatible vía API con SAP, Oracle, Microsoft Dynamics y otros ERPs.</p>
+                <h4><i class="fas fa-plug"></i> ¿Se integra con mi ERP?</h4>
+                <p>Totalmente. Tenemos conectores nativos para SAP, Oracle, Microsoft Dynamics y una API abierta para software a medida.</p>
             </div>
             <div class="faq-item">
-                <h4>¿Qué pasa si se corta Internet?</h4>
-                <p>El sistema sigue funcionando localmente y sincroniza los datos al volver la conexión.</p>
+                <h4><i class="fas fa-video"></i> ¿Qué cámaras necesito?</h4>
+                <p>StockCam funciona con la mayoría de cámaras IP modernas. Si no dispones de ellas, te suministramos hardware pre-configurado de nuestros partners.</p>
             </div>
             <div class="faq-item">
-                <h4>¿Cómo protegen la privacidad?</h4>
-                <p>No grabamos rostros ni datos biométricos de empleados, solo analizamos objetos y mercancía.</p>
+                <h4><i class="fas fa-wifi"></i> ¿Y si se corta Internet?</h4>
+                <p>El sistema "Edge Computing" sigue procesando localmente. Cuando vuelve la red, sincroniza los datos sin perder ni un solo movimiento.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-user-secret"></i> ¿Privacidad de empleados?</h4>
+                <p>Cumplimos con la LOPD y RGPD. El sistema anonimiza a las personas y se centra únicamente en el seguimiento de mercancías y bultos.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-chalkboard-teacher"></i> ¿Ofrecen formación?</h4>
+                <p>Sí. La implantación incluye una sesión de formación para operarios y gestores, asegurando que saquéis partido a la herramienta desde el día 1.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-headset"></i> ¿El soporte está incluido?</h4>
+                <p>Disponemos de soporte estándar en horario comercial y soporte 24/7 para clientes críticos con tiempos de respuesta inferiores a 1 hora.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-expand-arrows-alt"></i> ¿Es escalable si crezco?</h4>
+                <p>Absolutamente. Puedes empezar con una zona del almacén y ampliar a toda la nave o múltiples sedes con solo añadir licencias.</p>
             </div>
         </div>
     </section>
 
     <section id="contacto">
-        <div class="section-header"><h2>Contacto</h2><p>Respuesta en menos de 24h.</p></div>
+        <div class="section-header"><h2>Contacto</h2><p>Respuesta garantizada en menos de 24h.</p></div>
         <div class="contact-container">
             <div class="contact-left">
                 <h3 style="margin-bottom: 25px;">Sede Central</h3>
@@ -414,10 +461,10 @@
             </div>
             <div class="contact-right">
                 <form>
-                    <input type="text" placeholder="Nombre">
+                    <input type="text" placeholder="Nombre completo">
                     <input type="email" placeholder="Email corporativo">
-                    <textarea rows="4" placeholder="Mensaje"></textarea>
-                    <button type="button" class="cta-button" style="width:100%; font-size:14px;">Enviar</button>
+                    <textarea rows="4" placeholder="¿Cómo podemos ayudarte?"></textarea>
+                    <button type="button" class="cta-button" style="width:100%; font-size:14px;">Enviar Mensaje</button>
                 </form>
             </div>
         </div>
