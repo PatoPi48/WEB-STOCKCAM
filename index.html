@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockCam | Precisión en Inventario</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           CONFIGURACIÓN BASE
+           ========================================= */
+        :root {
+            --bg-dark: #0f172a;       
+            --bg-card: #1e293b;       
+            --bg-card-hover: #334155; 
+            --accent: #38bdf8;        
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text-white: #f1f5f9;
+            --text-gray: #94a3b8;
+            --success: #10b981;       
+            --danger: #ef4444;        
+            --warning: #f59e0b;       
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: white;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* =========================================
+           NAVBAR
+           ========================================= */
+        nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--accent);
+            filter: drop-shadow(0 0 5px var(--accent-glow));
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: white;
+            text-transform: uppercase;
+        }
+        .logo-text span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 35px; align-items: center; }
+        .nav-links a { font-weight: 500; font-size: 15px; text-transform: uppercase; position: relative; }
+        .nav-links a:hover { color: var(--accent); }
+
+        .btn-nav {
+            border: 2px solid var(--accent);
+            padding: 8px 20px;
+            border-radius: 4px;
+            color: var(--accent) !important;
+            font-weight: bold;
+        }
+        .btn-nav:hover { background: var(--accent); color: var(--bg-dark) !important; }
+
+        /* DROPDOWN */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--bg-card);
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            padding: 10px 0;
+            border: 1px solid rgba(255,255,255,0.05);
+            z-index: 1001;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a {
+            display: block;
+            padding: 12px 25px;
+            color: var(--text-gray);
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .dropdown-content a:hover { background-color: var(--bg-card-hover); color: var(--accent); }
+
+        .menu-toggle { display: none; font-size: 24px; cursor: pointer; color: white; }
+
+        /* =========================================
+           HERO
+           ========================================= */
+        .hero {
+            height: 90vh;
+            min-height: 600px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%), 
+                        url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        
+        .hero h1 span { color: var(--accent); }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            max-width: 800px;
+            margin-bottom: 50px;
+            color: var(--text-gray);
+        }
+
+        .cta-button {
+            padding: 18px 45px;
+            background: var(--accent);
+            color: var(--bg-dark);
+            font-weight: 800;
+            font-size: 16px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .cta-button:hover { transform: scale(1.05); background: white; }
+
+        /* =========================================
+           SECCIONES
+           ========================================= */
+        section { padding: 80px 5%; max-width: 1400px; margin: auto; }
+        
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; margin-bottom: 15px; }
+        .section-header p { color: var(--text-gray); max-width: 600px; margin: 0 auto; }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+        .feature-card i { font-size: 40px; color: var(--accent); margin-bottom: 25px; }
+        .feature-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
+        .feature-card p { color: var(--text-gray); font-size: 0.95rem; }
+
+        /* =========================================
+           PARTNERS (Añadido limpio)
+           ========================================= */
+        .partners-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(to right, var(--bg-dark), var(--bg-card), var(--bg-dark));
+        }
+        
+        .partners-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .partner-badge {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-gray);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .partner-badge i { color: var(--accent); }
+
+        /* =========================================
+           ESTRATEGIA (Tabs)
+           ========================================= */
+        .strategy-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 40px;
+        }
+
+        .tabs { display: flex; background: rgba(0,0,0,0.2); overflow-x: auto; }
+        .tab-btn {
+            flex: 1; padding: 25px; background: none; border: none;
+            color: var(--text-gray); font-weight: 700; cursor: pointer;
+            text-transform: uppercase; white-space: nowrap;
+        }
+        .tab-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); background: rgba(56,189,248,0.1); }
+
+        .tab-content { padding: 40px; display: none; animation: fadeIn 0.5s; }
+        .tab-content.active-content { display: block; }
+
+        .analysis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .analysis-item { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; border-left: 4px solid var(--text-gray); }
+        .analysis-item ul { padding-left: 20px; color: var(--text-gray); font-size: 0.9rem; }
+
+        .border-green { border-left-color: var(--success); }
+        .border-red { border-left-color: var(--danger); }
+        .border-orange { border-left-color: var(--warning); }
+        .border-blue { border-left-color: var(--accent); }
+
+        /* =========================================
+           NOSOTROS & FAQ
+           ========================================= */
+        .about-split { display: flex; gap: 60px; align-items: center; }
+        .about-img img { border-radius: 20px; box-shadow: -20px 20px 0 rgba(56, 189, 248, 0.1); }
+        
+        .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .faq-item h4 { color: var(--accent); margin-bottom: 10px; }
+        .faq-item p { color: var(--text-gray); }
+
+        /* =========================================
+           CONTACTO & FOOTER
+           ========================================= */
+        .contact-wrapper {
+            background: var(--bg-card); border-radius: 20px;
+            display: flex; flex-wrap: wrap; overflow: hidden;
+        }
+        .contact-info, .contact-form-box { flex: 1; padding: 60px; min-width: 300px; }
+        .contact-info { background: linear-gradient(135deg, var(--bg-card), #0f172a); }
+        
+        .info-row { display: flex; gap: 20px; margin-bottom: 30px; align-items: center; }
+        .info-row i { color: var(--accent); font-size: 1.5rem; }
+
+        input, textarea, select {
+            width: 100%; padding: 15px; margin-bottom: 20px;
+            background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; color: white;
+        }
+
+        footer { background: #020617; padding: 50px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
+
+        /* =========================================
+           RESPONSIVE
+           ========================================= */
+        @media (max-width: 900px) {
+            .nav-links {
+                position: absolute; top: 70px; left: 0; width: 100%;
+                background: var(--bg-card); flex-direction: column;
+                padding: 30px; display: none; border-bottom: 2px solid var(--accent);
+            }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: block; }
+            .about-split { flex-direction: column; }
+            .faq-grid { grid-template-columns: 1fr; }
+            .dropdown-content { position: static; box-shadow: none; width: 100%; }
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo-container">
+            <svg class="logo-svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><circle cx="12" cy="12" r="1.5"/></svg>
+            <div class="logo-text">ST<span>O</span>CKCAM</div>
+        </a>
+
+        <div class="menu-toggle" id="mobile-menu"><i class="fas fa-bars"></i></div>
+
+        <ul class="nav-links">
+            <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
+            <li class="dropdown">
+                <a href="#nosotros" onclick="toggleDropdown(event)">La Empresa <i class="fas fa-chevron-down" style="font-size: 12px;"></i></a>
+                <div class="dropdown-content">
+                    <a href="#mision" onclick="closeMenu()">Misión y Visión</a>
+                    <a href="#estrategia" onclick="closeMenu()">Análisis Estratégico</a>
+                </div>
+            </li>
+            <li><a href="#tecnologia" onclick="closeMenu()">Tecnología</a></li>
+            <li><a href="#faq" onclick="closeMenu()">FAQ</a></li>
+            <li><a href="#contacto" class="btn-nav" onclick="closeMenu()">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <header id="inicio" class="hero">
+        <h1>Precisión en Inventario,<br><span>Tranquilidad en Seguridad</span></h1>
+        <p>Automatizamos el control de inventarios mediante cámaras inteligentes y software basado en Inteligencia Artificial.</p>
+        <a href="#contacto" class="cta-button">Solicitar Demo</a>
+    </header>
+
+    <section id="problema">
+        <div class="section-header">
+            <h2>El Desafío Logístico</h2>
+            <p>Optimizamos procesos donde otros fallan.</p>
+        </div>
+        <div class="grid-3">
+            <div class="feature-card">
+                <i class="fas fa-user-lock"></i>
+                <h3>Privacidad Garantizada</h3>
+                <p>Nuestros sistemas cuentan con protocolos de anonimización. Cumplimos estrictamente con el RGPD y la Ley de IA de la UE.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-coins"></i>
+                <h3>Coste Optimizado</h3>
+                <p>Reducimos la barrera de entrada. Nuestra estrategia de proveedores nos permite ofrecer hardware de alta gama a un coste accesible para PYMES.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Instalación Rápida</h3>
+                <p>Simplificamos el proceso. Automatización parcial de la instalación para que el sistema esté operativo en días, no meses.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="partners-section">
+        <div class="section-header">
+            <h4 style="color: var(--accent); margin-bottom: 10px;">ALIANZAS ESTRATÉGICAS</h4>
+            <h2>Nuestros Partners Tecnológicos</h2>
+        </div>
+        <div class="partners-grid">
+            <div class="partner-badge"><i class="fas fa-microchip"></i> Honeywell</div>
+            <div class="partner-badge"><i class="fas fa-cloud"></i> AWS Cloud</div>
+            <div class="partner-badge"><i class="fas fa-database"></i> SAP</div>
+            <div class="partner-badge"><i class="fas fa-wifi"></i> Siemens</div>
+            <div class="partner-badge"><i class="fas fa-barcode"></i> Zebra</div>
+        </div>
+    </div>
+
+    <section id="nosotros">
+        <div class="about-split">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Almacén">
+            </div>
+            <div class="about-txt">
+                <h2>¿Quiénes Somos?</h2>
+                <p style="margin-bottom: 20px;">StockCam es innovación en logística mediante Visión Artificial.</p>
+                
+                <div id="mision" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--accent);">Misión</h3>
+                    <p style="color: var(--text-gray);">Ayudar a empresas a automatizar procesos, mejorar la trazabilidad y reducir errores.</p>
+                </div>
+                <div id="vision">
+                    <h3 style="color: var(--accent);">Visión</h3>
+                    <p style="color: var(--text-gray);">Ser el partner tecnológico clave en la transformación digital hacia la industria 4.0.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="estrategia">
+        <div class="section-header">
+            <h2>Análisis Estratégico</h2>
+        </div>
+        <div class="strategy-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-pestel')">Entorno (PESTEL)</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-dafo')">DAFO</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-came')">CAME</button>
+            </div>
+
+            <div id="tab-pestel" class="tab-content active-content">
+                <div class="analysis-grid">
+                    <div class="analysis-item border-blue">
+                        <h4>Político / Legal</h4>
+                        <ul><li>Subvenciones Kit Digital.</li><li>Cumplimiento RGPD y Ley IA.</li></ul>
+                    </div>
+                    <div class="analysis-item border-blue">
+                        <h4>Económico</h4>
+                        <ul><li>Crecimiento E-commerce.</li><li>Inflación hardware.</li></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-dafo" class="tab-content">
+                <div class="analysis-grid">
+                    <div class="analysis-item border-green"><h4>Fortalezas</h4><ul><li>Especialización en IA.</li><li>Soporte 24/7.</li></ul></div>
+                    <div class="analysis-item border-red"><h4>Debilidades</h4><ul><li>Dependencia chips.</li><li>Inversión I+D.</li></ul></div>
+                    <div class="analysis-item border-blue"><h4>Oportunidades</h4><ul><li>Ayudas públicas.</li><li>Falta mano obra.</li></ul></div>
+                    <div class="analysis-item border-orange"><h4>Amenazas</h4><ul><li>Competencia global.</li><li>Ciberataques.</li></ul></div>
+                </div>
+            </div>
+
+            <div id="tab-came" class="tab-content">
+                <div class="analysis-grid">
+                    <div class="analysis-item border-red"><h4>Corregir</h4><p style="color: var(--text-gray);">Buscamos proveedores alternativos.</p></div>
+                    <div class="analysis-item border-orange"><h4>Afrontar</h4><p style="color: var(--text-gray);">Nos diferenciamos por trato cercano.</p></div>
+                    <div class="analysis-item border-green"><h4>Mantener</h4><p style="color: var(--text-gray);">Inversión continua en algoritmos.</p></div>
+                    <div class="analysis-item border-blue"><h4>Explotar</h4><p style="color: var(--text-gray);">Aprovechamos subvenciones.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tecnologia" style="background: var(--bg-card);">
+        <div class="section-header"><h2>Tecnología</h2></div>
+        <div class="grid-3">
+            <div class="feature-card"><i class="fas fa-camera"></i><h3>Visión Artificial</h3><p>Reconocimiento de SKUs en tiempo real.</p></div>
+            <div class="feature-card"><i class="fas fa-shield-alt"></i><h3>Seguridad</h3><p>Sensores de movimiento integrados.</p></div>
+            <div class="feature-card"><i class="fas fa-mobile-alt"></i><h3>App Cloud</h3><p>Control total desde el móvil.</p></div>
+        </div>
+    </section>
+
+    <section id="faq">
+        <div class="section-header"><h2>Preguntas Frecuentes</h2></div>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h4>¿Es rentable para una PYME?</h4>
+                <p>Sí, hemos optimizado costes para ser accesibles.</p>
+            </div>
+            <div class="faq-item">
+                <h4>¿Integración con software?</h4>
+                <p>Sí, trabajamos con APIs abiertas compatibles con SAP, Oracle y Microsoft Dynamics.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto">
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <h3>Contacto</h3>
+                <div class="info-row"><i class="fas fa-map-marker-alt"></i><span>Calle Caoba 12, Madrid</span></div>
+                <div class="info-row"><i class="fas fa-envelope"></i><span>contacto@stockcam.com</span></div>
+            </div>
+            <div class="contact-form-box">
+                <form>
+                    <input type="text" placeholder="Nombre">
+                    <input type="email" placeholder="Email">
+                    <textarea rows="4" placeholder="Mensaje"></textarea>
+                    <button type="button" class="cta-button" style="width:100%">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 StockCam S.L.</p>
+    </footer>
+
+    <script>
+        // MENU MÓVIL
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        const dropdown = document.querySelector('.dropdown');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        function closeMenu() {
+            if (window.innerWidth <= 900) {
+                navLinks.classList.remove('active');
+                menuToggle.querySelector('i').classList.remove('fa-times');
+                menuToggle.querySelector('i').classList.add('fa-bars');
+            }
+        }
+
+        function toggleDropdown(e) {
+            if (window.innerWidth <= 900) {
+                e.preventDefault();
+                dropdown.classList.toggle('active');
+                let content = dropdown.querySelector('.dropdown-content');
+                content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // TABS ESTRATEGIA
+        function openTab(evt, tabName) {
+            var i, tabContent, tabBtns;
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+                tabContent[i].classList.remove("active-content");
+            }
+            tabBtns = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].className = tabBtns[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => {
+                document.getElementById(tabName).classList.add("active-content");
+            }, 10);
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>
