@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockCam | Precisión y Seguridad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CONFIGURACIÓN BASE --- */
+        :root {
+            --bg-dark: #0f172a;       
+            --bg-card: #1e293b;       
+            --primary: #38bdf8;       /* Azul Cyan de tu marca */
+            --primary-hover: #0ea5e9;
+            --text-main: #f8fafc;     
+            --text-muted: #94a3b8;    
+            --accent-green: #10b981;  
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* --- BARRA DE NAVEGACIÓN --- */
+        nav {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .logo img {
+            height: 40px; /* Ajusta esto según tu imagen */
+            width: auto;
+        }
+
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn-contact {
+            padding: 8px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            color: var(--primary) !important;
+            font-weight: bold;
+        }
+        .btn-contact:hover { background: var(--primary); color: var(--bg-dark) !important; }
+
+        .menu-toggle { display: none; font-size: 26px; cursor: pointer; color: white; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            min-height: 600px;
+            /* Fondo tecnológico oscuro */
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .hero h1 span { color: var(--primary); display: block; font-size: 0.8em; margin-top: 10px;}
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            max-width: 800px;
+            margin-bottom: 40px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--primary);
+            padding-left: 20px;
+            text-align: left;
+        }
+
+        .btn-hero {
+            padding: 15px 35px;
+            background-color: var(--primary);
+            color: #000;
+            border-radius: 5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .btn-hero:hover { transform: translateY(-3px); background-color: var(--primary-hover); }
+
+        /* --- SECCIONES COMUNES --- */
+        section { padding: 80px 20px; max-width: 1200px; margin: auto; }
+
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; margin-bottom: 10px; color: var(--text-main); }
+        .section-header span { color: var(--primary); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
+        
+        /* --- GRID --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        /* --- CARDS SERVICIOS --- */
+        .card {
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 12px;
+            border-top: 3px solid transparent;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); border-top-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        
+        .card i { font-size: 40px; color: var(--primary); margin-bottom: 20px; }
+        .card h3 { margin-bottom: 15px; font-size: 1.4rem; }
+        .card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- SOBRE NOSOTROS --- */
+        .about-wrapper { display: flex; gap: 50px; align-items: center; flex-wrap: wrap; }
+        .about-text { flex: 1; min-width: 300px; }
+        .about-img { flex: 1; min-width: 300px; }
+        .about-img img { border-radius: 15px; box-shadow: -20px 20px 0 rgba(56, 189, 248, 0.1); }
+
+        .stat-box {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        /* --- PARTNERS (Logos) --- */
+        .partners-section { text-align: center; background: #0b1120; padding: 50px 20px; }
+        .partners-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            opacity: 0.7;
+        }
+        .partner-item { font-size: 1.5rem; font-weight: bold; color: #64748b; display: flex; align-items: center; gap: 10px; }
+        .partner-item i { font-size: 2rem; }
+
+        /* --- CONTACTO --- */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            background: var(--bg-card);
+            padding: 50px;
+            border-radius: 20px;
+        }
+        
+        .contact-info div { margin-bottom: 25px; display: flex; gap: 15px; }
+        .contact-info i { color: var(--primary); font-size: 1.2rem; margin-top: 5px; }
+        
+        form input, form textarea {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid #334155;
+            padding: 15px;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        form button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            border: none;
+            color: black;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: black;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: absolute; top: 70px; left: 0; width: 100%;
+                background: var(--bg-card); flex-direction: column;
+                padding: 30px; display: none; border-bottom: 1px solid var(--primary);
+            }
+            .nav-links.active { display: flex; }
+            .hero h1 { font-size: 2.5rem; }
+            section { padding: 60px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <i class="fas fa-camera-retro"></i> STOCKCAM
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
+            <li><a href="#nosotros" onclick="closeMenu()">Empresa</a></li>
+            <li><a href="#servicios" onclick="closeMenu()">Servicios</a></li>
+            <li><a href="#partners" onclick="closeMenu()">Tecnología</a></li>
+            <li><a href="#contacto" class="btn-contact" onclick="closeMenu()">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <header id="inicio" class="hero">
+        <h1>Precisión en Inventario <br> <span>Tranquilidad en Seguridad</span></h1>
+        <p>Somos StockCam. Automatizamos el control de inventarios mediante cámaras inteligentes y software basado en Inteligencia Artificial. Tu almacén, actualizado en tiempo real.</p>
+        <a href="#contacto" class="btn-hero">Solicitar Demo</a>
+    </header>
+
+    <section id="nosotros">
+        <div class="about-wrapper">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Tecnología StockCam">
+            </div>
+            <div class="about-text">
+                <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                    <span>Nuestra Filosofía</span>
+                    <h2>Innovación Logística</h2>
+                </div>
+                <p>La idea de negocio surge de la necesidad que tienen las empresas modernas de mantener un control preciso, detallado y rápido de su stock. Los métodos tradicionales son lentos y propensos a errores humanos.</p>
+                <br>
+                <p>En <strong>StockCam S.L.</strong> ofrecemos una solución accesible que combina <strong>Visión Artificial e IoT</strong> para transformar almacenes tradicionales en entornos inteligentes 4.0.</p>
+                
+                <div class="stat-box">
+                    <strong>Objetivo Estratégico:</strong><br>
+                    Expandir nuestra red a Portugal y Francia, consolidándonos como líderes europeos.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios">
+        <div class="section-header">
+            <span>¿Qué hacemos?</span>
+            <h2>Nuestros Servicios</h2>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <i class="fas fa-boxes-stacked"></i>
+                <h3>Control de Stock IA</h3>
+                <p>Cámaras con visión artificial que reconocen productos automáticamente. El sistema actualiza el inventario al instante ante cualquier entrada o salida.</p>
+            </div>
+            
+            <div class="card">
+                <i class="fas fa-eye"></i>
+                <h3>Videovigilancia Activa</h3>
+                <p>De forma paralela al conteo, ofrecemos seguridad integral. Sensores de movimiento que detectan accesos no autorizados y protegen la mercancía.</p>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-laptop-code"></i>
+                <h3>Software de Gestión</h3>
+                <p>Plataforma propia accesible desde App y Web. Consulta tus datos en tiempo real, genera reportes de pérdidas y optimiza la reposición.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="partners" class="partners-section">
+        <div class="section-header">
+            <span>Nuestra Tecnología</span>
+            <h2>Partners y Proveedores</h2>
+            <p style="margin-top: 10px; color: #94a3b8;">Trabajamos con los líderes del sector para garantizar hardware y nube de máxima calidad.</p>
+        </div>
+        <div class="partners-grid">
+            <div class="partner-item"><i class="fas fa-barcode"></i> Zebra</div>
+            <div class="partner-item"><i class="fas fa-microchip"></i> Honeywell</div>
+            <div class="partner-item"><i class="fab fa-aws"></i> AWS Cloud</div>
+            <div class="partner-item"><i class="fab fa-microsoft"></i> Azure IoT</div>
+            <div class="partner-item"><i class="fas fa-database"></i> SAP Integration</div>
+        </div>
+    </div>
+
+    <section id="contacto">
+        <div class="section-header">
+            <span>Hablemos</span>
+            <h2>Contacto Comercial</h2>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Sede Central</h3>
+                <p style="margin-bottom: 30px; color: #94a3b8;">Estamos ubicados en una zona estratégica de Madrid para dar servicio a toda la península.</p>
+                
+                <div>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>C/ Alcalá 250, 28027<br>Madrid, España</span>
+                </div>
+                <div>
+                    <i class="fas fa-envelope"></i>
+                    <span>stockcam@company.com</span>
+                </div>
+                <div>
+                    <i class="fas fa-globe"></i>
+                    <span>www.stockcam.com</span>
+                </div>
+            </div>
+
+            <form>
+                <input type="text" placeholder="Nombre de la Empresa" required>
+                <input type="email" placeholder="Correo Corporativo" required>
+                <textarea rows="4" placeholder="¿Cómo podemos ayudarte con tu inventario?" required></textarea>
+                <button type="submit">Enviar Solicitud</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 StockCam S.L. - Todos los derechos reservados.</p>
+        <div style="margin-top: 15px; font-size: 1.2rem;">
+            <a href="#" style="margin: 0 10px;"><i class="fab fa-linkedin"></i></a>
+            <a href="#" style="margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        function closeMenu() {
+            if (window.innerWidth <= 768) {
+                navLinks.classList.remove('active');
+                menuToggle.querySelector('i').classList.add('fa-bars');
+                menuToggle.querySelector('i').classList.remove('fa-times');
+            }
+        }
+    </script>
+
+</body>
+</html>
